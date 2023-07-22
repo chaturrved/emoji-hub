@@ -1,21 +1,24 @@
 <div class="grid-container">
   <mat-toolbar>
-    <h1 class="pageTitle">Dashboard</h1>
-    <div class="searchSelect">
-      <label for="category">Choose a Category:</label>
-      <select name="category" id="category">
-        <option value='smileys and people'>'smileys and people'</option>
-        <option value='animals and nature'>'animals and nature'</option>
-        <option value='food and drink'>'food and drink'</option>
-        <option value='travel and places'>'travel and places'</option>
-        <option value='activities'>'activities'</option>
-        <option value='objects'>'objects'</option>
-        <option value='symbols'>'symbols'</option>
-        <option value='flags'>'flags'</option>
-      </select>
-    </div>
+    <h1 class="logo" [innerHTML]="logoemoticon"></h1>
+    <h1 class="pageTitle">Emoji Hub</h1>
   </mat-toolbar>
+  <form [formGroup]="searchForm">
+    <label for="category">Choose a Category:</label>
+    <select name="category" id="category" formControlName="category">
+      <option value='smileys and people'>Smileys and People</option>
+      <option value='animals and nature'>Animals and Nature</option>
+      <option value='food and drink'>Food and Drinks</option>
+      <option value='travel and places'>Travel and Places</option>
+      <option value='activities'>Activities</option>
+      <option value='objects'>Objects</option>
+      <option value='symbols'>Symbols</option>
+      <option value='flags'>Flags</option>
+    </select>
+  </form>
   <h3>Current Layout: {{ (emojiLayout | async)?.name }}</h3>
+
+  <mat-paginator [length]="length" [pageIndex]="pageIndex" [pageSize]="pageSize" (page)="OnPageChange($event)"></mat-paginator>
   <mat-grid-list [cols]="(emojiLayout | async)?.gridColumns" rowHeight="350px">
     <mat-grid-tile *ngFor="let emoji of (emojiLayout | async)?.layoutItem" [colspan]="(emojiLayout | async)?.cols" [rowspan]="(emojiLayout | async)?.rows">
       <mat-card class="dashboard-card">
@@ -27,11 +30,12 @@
             <p>Category : {{emoji.category}}</p>
             <p>Group : {{emoji.group}}</p>
             <p>HtmlCode : {{emoji.htmlCode.toString()}}</p>
-            <p>UniCode : {{emoji.unicode.toString()}}</p>
+            <!-- <p>UniCode : {{emoji.unicode.toString()}}</p> -->
           </div>
-          <div *ngFor="let htmlcode of emoji.htmlCode">
-            <div class="emoji" [innerHtml]="htmlcode"></div>
+          <div>
+            <p class="emoji" [innerHtml]="getModifiedHtmlCode(emoji.htmlCode)"></p>
           </div>
+          
           <!-- <div class="emoji" [innerHtml]="emoji.htmlCode.toString()"></div> -->
         </mat-card-content>
       </mat-card>
